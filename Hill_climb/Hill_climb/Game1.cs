@@ -2,30 +2,39 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Threading;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Hill_climb.Class;
+using Microsoft.Xna.Framework.Media;
 
 namespace Hill_climb
+
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class Game1 :Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D hill;
-        Texture2D Start_logo;
-        Texture2D Car_2D_StartScreen;
-        Texture2D cursor;
+        
+        Car player;
+
        
-        int logo_y_posistion;
-        int logo_car2d_x_posistion;
+        
+        
+        int logo_y_posistion = -50;
+        int logo_car2d_x_posistion = 768;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             graphics.IsFullScreen = true;
             
-            
+           
 
         }
 
@@ -41,7 +50,9 @@ namespace Hill_climb
             // TODO: Add your initialization logic here
             graphics.PreferredBackBufferHeight = 768;
             graphics.PreferredBackBufferWidth = 1366;
-            
+            int logo_y_posistion = -50;
+            int logo_car2d_x_posistion = 768;
+
             base.Initialize();
         }
 
@@ -51,16 +62,12 @@ namespace Hill_climb
         /// </summary>
         protected override void LoadContent()
         {
-            logo_y_posistion = -50;
-            logo_car2d_x_posistion = 768;
+           
            // Create a new SpriteBatch, which can be used to draw textures.
 
-            hill = Content.Load<Texture2D> ("Capture"); // not used
-            Start_logo = Content.Load<Texture2D>("hill_climb_racing_2_logo");
-            Car_2D_StartScreen = Content.Load<Texture2D>("car2d");
-            cursor = Content.Load<Texture2D>("Cursor_icon_with_shadow");
-            
-
+          
+            player = new Car(Content.Load<Texture2D>("car2d"),new Vector2(50,50));
+          
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -85,7 +92,8 @@ namespace Hill_climb
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            if(logo_y_posistion < 384 - Start_logo.Height / 6)
+
+            /*if (logo_y_posistion < 384 - Start_logo.Height / 6)
             {
                 
                 logo_y_posistion += gameTime.ElapsedGameTime.Milliseconds/10;
@@ -98,6 +106,10 @@ namespace Hill_climb
             {
                 logo_car2d_x_posistion = 768;
             }
+            */
+
+            player.Update(gameTime);
+
            
 
 
@@ -116,14 +128,10 @@ namespace Hill_climb
 
 
 
-            GraphicsDevice.Clear(Color.ForestGreen);
-            
-            spriteBatch.Draw(Start_logo, new Rectangle(720-Start_logo.Width/6 ,logo_y_posistion, Start_logo.Width/6, Start_logo.Height/6),Color.White);
-            spriteBatch.Draw(Car_2D_StartScreen, new Rectangle(logo_car2d_x_posistion,400,Car_2D_StartScreen.Width/3,Car_2D_StartScreen.Height/3), Color.White);
-            spriteBatch.Draw(cursor, new Vector2(Mouse.GetState().X, Mouse.GetState().Y),Color.White);
-;           spriteBatch.End();
-           
+            GraphicsDevice.Clear(Color.LawnGreen);
+            player.Draw(spriteBatch);
 
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
